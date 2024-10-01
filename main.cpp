@@ -1,34 +1,38 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-// 再帰的な賃金体系を計算する関数
-double RecursiveWage(int hours, double prev_wage = 100) {
-    if (hours == 1) {
-        return prev_wage;
+// 奇数か偶数かを判定するためのコールバック関数
+void checkOddEven(int diceRoll, int (*callback)(int), int guess) {
+    int result = callback(diceRoll);
+
+    // 正解か不正解かを判定
+    if ((result == 1 && guess == 1) || (result == 0 && guess == 2)) {
+        printf("正解！\n");
     }
-    // 「前の1時間でもらった時給 * 2 - 50」で次の賃金を計算
-    double current_wage = prev_wage * 2 - 50;
-    return current_wage + RecursiveWage(hours - 1, current_wage);
+    else {
+        printf("不正解！\n");
+    }
 }
 
-// 一般的な賃金体系を計算する関数
-double GeneralWage(int hours) {
-    return 1072 * hours;
+// 奇数か偶数かを判定する関数 (奇数なら1、偶数なら0を返す)
+int isOdd(int number) {
+    return number % 2;
 }
 
 int main() {
-    int hours;
+    srand(time(NULL)); 
+    int diceRoll = rand() % 6 + 1; 
 
-    // 働く時間の入力 (scanf使用)
-    printf("働く時間を入力してください: ");
-    scanf_s("%d", &hours);
+    int guess; 
+    printf("サイコロの出目が奇数か偶数かを予想してください (奇数...1 / 偶数...2): ");
+    scanf_s("%d", &guess);
 
-    // 各体系での総賃金を計算
-    double total_recursive_wage = RecursiveWage(hours);
-    double total_general_wage = GeneralWage(hours);
+    // 出目をコールバック関数で判定
+    checkOddEven(diceRoll, isOdd, guess);
 
-    // 結果の出力 (printf使用)
-    printf("再帰的な賃金体系の総賃金: %.2f円\n", total_recursive_wage);
-    printf("一般的な賃金体系の総賃金: %.2f円\n", total_general_wage);
+   
+    printf("実際のサイコロの出目: %d\n", diceRoll);
 
     return 0;
 }
