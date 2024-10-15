@@ -2,37 +2,36 @@
 #include <stdlib.h>
 #include <time.h>
 
-// 奇数か偶数かを判定するためのコールバック関数
-void checkOddEven(int diceRoll, int (*callback)(int), int guess) {
-    int result = callback(diceRoll);
-
-    // 正解か不正解かを判定
-    if ((result == 1 && guess == 1) || (result == 0 && guess == 2)) {
-        printf("正解！\n");
-    }
-    else {
-        printf("不正解！\n");
-    }
-}
-
-// 奇数か偶数かを判定する関数 (奇数なら1、偶数なら0を返す)
-int isOdd(int number) {
-    return number % 2;
+// 3秒wait
+void delay(int seconds) {
+    int milli_seconds = 1000 * seconds;
+    clock_t start_time = clock();
+    while (clock() < start_time + milli_seconds);
 }
 
 int main() {
-    srand(time(NULL)); 
-    int diceRoll = rand() % 6 + 1; 
+    srand(time(0)); 
+    int diceRoll = rand() % 6 + 1;  
+    int isEven = diceRoll % 2 == 0; 
 
-    int guess; 
-    printf("サイコロの出目が奇数か偶数かを予想してください (奇数...1 / 偶数...2): ");
-    scanf_s("%d", &guess);
-
-    // 出目をコールバック関数で判定
-    checkOddEven(diceRoll, isOdd, guess);
+    printf("奇数か偶数か (1: 奇数, 0: 偶数): ");
 
    
-    printf("実際のサイコロの出目: %d\n", diceRoll);
+    int guess;
+    scanf_s("%d", &guess);
+
+    delay(3);
+
+    //結果
+    if (guess == 1 && !isEven) {
+        printf("〇　出た目:%d,奇数です。\n", diceRoll);
+    }
+    else if (guess == 0 && isEven) {
+        printf("〇　出た目:%d,偶数です。\n", diceRoll);
+    }
+    else {
+        printf("×　出た目は%dで%sでした。\n", diceRoll, isEven ? "偶数" : "奇数");
+    }
 
     return 0;
 }
