@@ -1,52 +1,28 @@
 #include <iostream>
-#include <string>
+#include <cstdio>
 
-class Enemy {
+template <typename T>
+class Compare {
 public:
-    // 状態遷移関数ポインタの型定義
-    typedef void (Enemy::* StateFunc)();
-
-    // コンストラクタ
-    Enemy() : currentState(&Enemy::meleeState) {}
-
-    // 状態遷移メソッド
-    void changeState(StateFunc newState) {
-        currentState = newState;
+    // 2つの引数のうち小さい方を返す関数
+    T Min(const T& value1, const T& value2) {
+        return (value1 < value2) ? value1 : value2;
     }
-
-    // 状態を更新して表示
-    void update() {
-        (this->*currentState)();
-    }
-
-private:
-    // 各状態の関数
-    void meleeState() {
-        std::cout << "近接攻撃中...\n";
-        changeState(&Enemy::rangedState);
-    }
-
-    void rangedState() {
-        std::cout << "射撃攻撃中...\n";
-        changeState(&Enemy::retreatState);
-    }
-
-    void retreatState() {
-        std::cout << "離脱中...\n";
-        changeState(&Enemy::meleeState); // ループさせるために最初に戻る
-    }
-
-    // 現在の状態関数へのポインタ
-    StateFunc currentState;
 };
 
 int main() {
-    Enemy enemy;
+    // int型、float型、double型の3パターンでインスタンスを生成してテスト
+    Compare<int> intComp;
+    Compare<float> floatComp;
+    Compare<double> doubleComp;
 
+    int intResult = intComp.Min(10, 20);
+    float floatResult = floatComp.Min(5.5f, 3.2f);
+    double doubleResult = doubleComp.Min(8.9, 4.6);
 
-    for (int i = 0; i < 3; ++i) {
-        enemy.update();
-    }
+    printf("Int型の最小値: %d\n", intResult);
+    printf("Float型の最小値: %.2f\n", floatResult);
+    printf("Double型の最小値: %.2f\n", doubleResult);
 
-        return 0;
-    }
+    return 0;
+}
