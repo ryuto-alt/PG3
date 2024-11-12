@@ -1,28 +1,37 @@
-#include <iostream>
 #include <cstdio>
+using namespace std;
 
-template <typename T>
-class Compare {
+class Animal {
 public:
-    // 2つの引数のうち小さい方を返す関数
-    T Min(const T& value1, const T& value2) {
-        return (value1 < value2) ? value1 : value2;
+    virtual void sound() const = 0;  
+};
+
+
+class Dog : public Animal {
+public:
+    void sound() const override {
+        printf("イヌ：ワン!\n");
+    }
+};
+
+
+class Cat : public Animal {
+public:
+    void sound() const override {
+        printf("ネコ:ニャー!\n");
     }
 };
 
 int main() {
-    // int型、float型、double型の3パターンでインスタンスを生成してテスト
-    Compare<int> intComp;
-    Compare<float> floatComp;
-    Compare<double> doubleComp;
+    Animal* animal1 = new Dog();  
+    Animal* animal2 = new Cat();  
 
-    int intResult = intComp.Min(10, 20);
-    float floatResult = floatComp.Min(5.5f, 3.2f);
-    double doubleResult = doubleComp.Min(8.9, 4.6);
+    animal1->sound();  
+    animal2->sound();  
 
-    printf("Int型の最小値: %d\n", intResult);
-    printf("Float型の最小値: %.2f\n", floatResult);
-    printf("Double型の最小値: %.2f\n", doubleResult);
+    
+    delete animal1;
+    delete animal2;
 
     return 0;
 }
