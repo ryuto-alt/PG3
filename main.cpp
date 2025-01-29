@@ -1,37 +1,56 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <Windows.h>
 #include <time.h>
+#include <functional>
 
-// 3秒wait
-void delay(int seconds) {
-    int milli_seconds = 1000 * seconds;
-    clock_t start_time = clock();
-    while (clock() < start_time + milli_seconds);
+// コールバック関数
+void DispResult(int* s, int* kye, int dice) {
+    if (dice == *kye) {
+        if (dice == 0)
+            printf("%dで丁(偶数)でした。当たり\n", dice);
+        else
+            printf("%dで半(奇数)でした。当たり\n", dice);
+    }
+    else {
+        if (dice == 1)
+            printf("%dで半(奇数)でした。はずれ\n", dice);
+        else
+            printf("%dで丁(偶数)でした。はずれ\n", dice);
+    }
+}
+
+// setTimeout関数
+void setTimeout(std::function<void(int*, int*, int)> p, int second, int kye, int dice) {
+    for (int i = 0; i < second; i++) {
+        Sleep(1000);
+        printf("%d...\n", second - i);
+    }
+    p(&second, &kye, dice);
 }
 
 int main() {
-    srand(time(0)); 
-    int diceRoll = rand() % 6 + 1;  
-    int isEven = diceRoll % 2 == 0; 
+    int kye;
+    srand(static_cast<unsigned int>(time(NULL)));
 
-    printf("奇数か偶数か (1: 奇数, 0: 偶数): ");
+    printf("丁(偶数)なら0、半(奇数)なら1を打つ\n");
+    scanf_s("%d", &kye);
 
-   
-    int guess;
-    scanf_s("%d", &guess);
-
-    delay(3);
-
-    //結果
-    if (guess == 1 && !isEven) {
-        printf("〇　出た目:%d,奇数です。\n", diceRoll);
-    }
-    else if (guess == 0 && isEven) {
-        printf("〇　出た目:%d,偶数です。\n", diceRoll);
+    if (kye == 0) {
+        puts("あなたは丁(偶数)を選びました");
     }
     else {
-        printf("×　出た目は%dで%sでした。\n", diceRoll, isEven ? "偶数" : "奇数");
+        puts("あなたは半(奇数)を選びました");
     }
+
+    // 乱数を生成（ここで固定しておく）
+    int dice = rand() % 2;
+
+    // ラムダ式でコールバック関数を指定
+    std::function<void(int*, int*, int)> p =
+        [](int* s, int* kye, int dice) { DispResult(s, kye, dice); };
+
+    // 3秒後に結果を表示
+    setTimeout(p, 3, kye, dice);
 
     return 0;
 }
